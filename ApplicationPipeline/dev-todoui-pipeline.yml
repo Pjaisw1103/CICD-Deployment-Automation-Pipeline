@@ -1,0 +1,67 @@
+trigger: none
+
+pool: default
+
+stages:
+
+  - stage: BuildAndPublish
+    displayName: Build And Publish
+    jobs:
+      - job: BuildJob
+        displayName: Build Artifact
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSource: 'spec'
+            versionSpec: '16.x'
+
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              npm install
+              npm run build
+
+     
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/build'
+            artifact: 'ToDoBuild'
+            publishLocation: 'pipeline'
+     
+  - stage: Deployment
+    displayName: Deployment
+    jobs:
+      - deployment: Deployment
+        displayName: Deployment
+        environment: 
+         name: dev-env
+         resourceType: VirtualMachine
+        strategy:
+         runOnce:
+           deploy: 
+             steps:
+             - task: DownloadBuildArtifacts@1
+               inputs:
+                 buildType: 'current'
+                 downloadType: 'single'
+                 artifactName: 'ToDoBuild'
+                 downloadPath: '$(Pipeline.Workspace)'
+             
+             - task: Bash@3
+               inputs:
+                 targetType: 'inline'
+                 script: 'sudo cp -r $(Pipeline.Workspace)/* /var/www/html/'
+             
+             
+          
+
+
+
+
+
+
+
+
+
+        

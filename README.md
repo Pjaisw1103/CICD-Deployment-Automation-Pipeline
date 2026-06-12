@@ -222,7 +222,7 @@ The following secure variables are required for successful pipeline execution:
 
 
 ```markdown
-![Frontend UI](Screenshot 2026-06-12 125801.png)
+![Frontend UI]([Screenshot 2026-06-12 125801.png](https://github.com/Pjaisw1103/CICD-Deployment-Automation-Pipeline/blob/main/Screenshot%202026-06-12%20125801.png))
 ```
 
 

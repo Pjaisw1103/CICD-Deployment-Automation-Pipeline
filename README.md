@@ -7,3 +7,30 @@ This repository contains the end-to-end automated **CI/CD (Continuous Integratio
 ## 🏗️ System Architecture & Workflow
 
 The pipeline automates the entire lifecycle of the application, from code modification to container image building, testing, pushing to a container registry, and deploying to the target environment.
+
++-------------------------+         +-------------------------+
+   |   ReactTodoUIMonolith   |         |  PyTodoBackendMonolith  |
+   |       (Frontend)        |         |        (Backend)        |
+   +------------+------------+         +------------+------------+
+                |                                   |
+                +-----------------+-----------------+
+                                  |
+                                  v
+                   +-----------------------------+
+                   | CICD-Deployment-Automation  |
+                   |          Pipeline           |
+                   +--------------+--------------+
+                                  |
+                     [Triggers Docker Build & CI]
+                                  v
+                   +-----------------------------+
+                   |    Docker Image Building    |
+                   |  (Multi-stage Optimization) |
+                   +--------------+--------------+
+                                  |
+                         [Pushed to Registry]
+                                  v
+                   +-----------------------------+
+                   |  Target Deployment Platform |
+                   |    (Staging / Production)   |
+                   +-----------------------------+

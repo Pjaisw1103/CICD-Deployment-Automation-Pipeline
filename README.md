@@ -1,148 +1,269 @@
-# 🚀 Automated CI/CD Deployment Pipeline for Todo Application
+# 🚀 CI/CD Deployment Automation Pipeline for Todo Application
 
-This repository houses the infrastructure configurations for a multi-service Todo Application. It decouples the **Dockerization Setup** (the container environment) from the **CI/CD Pipeline** (the automation engine) to maintain a clean DevOps architecture.
+This repository demonstrates the implementation of a complete **CI/CD (Continuous Integration & Continuous Deployment) Pipeline** using **Azure DevOps** for a multi-service Todo Application.
 
----
-
-## 📦 Application Component Source
-
-This repository automates and orchestrates deployment for the following external sub-modules:
-
-* **Frontend UI:** https://github.com/devopsinsiders/ReactTodoUIMonolith.git (ReactJS)
-* **Backend API:** https://github.com/devopsinsiders/PyTodoBackendMonolith.git (Python API)
+The primary objective of this project is to automate the software delivery lifecycle—from source code integration to production deployment—while maintaining a clean separation between application development and deployment automation.
 
 ---
 
-## 🐋 1. Dockerization Strategy & Configuration
+# 📌 Project Overview
 
-The application ecosystem uses independent container environments defined within this repository. This guarantees that the applications run exactly the same way in local development as they do on production servers.
+The application source code is maintained separately and this repository acts as an independent deployment automation layer responsible for:
 
-### 🖥️ Frontend Docker Environment
+* Continuous Integration (CI)
+* Continuous Deployment (CD)
+* Build Validation
+* Artifact Management
+* Environment Configuration
+* Release Automation
 
-* **Approach:** Multi-stage Docker build.
-* **Stage 1 (Build):** Spins up a Node.js lightweight container to install NPM packages and compile production-ready static assets.
-* **Stage 2 (Production):** Drops the heavy Node modules and copies only the compiled HTML/JS build into a super-lightweight **Nginx Alpine** image to serve the frontend securely and instantly.
-
-### ⚙️ Backend Docker Environment
-
-* **Approach:** Optimized Python base layout.
-* **Execution:** Installs application dependencies via `pip` out of a cached layer strategy to speed up consecutive image builds, exposing the required WSGI/ASGI application ports.
+The pipeline automatically detects changes, builds application artifacts, validates deployments, and delivers updates to the target environment without manual intervention.
 
 ---
 
-## 🔄 2. CI/CD Pipeline Workflow & Breakdown
+# 📦 Application Source Repositories
 
-The automation pipeline acts as the runtime scheduler. It handles testing, packaging, and shipping the code automatically without any human intervention.
+The CI/CD workflow orchestrates deployment for the following application repositories:
 
-### Pipeline Execution Stages
+### Frontend Application
 
-* **Trigger Event:** Executed autonomously on any code push or pull request merging into the `main` branch.
-* **Environment Provisioning:** Automatically spins up a fresh runner agent, maps secrets securely, and injects runtime configurations.
-* **Build Execution:** Calls the underlying Dockerfiles dynamically, injecting the production `BACKEND_API_URL` variable as build arguments into the React image.
-* **Artifact Shipping:** Authenticates into Docker Hub using encrypted repository secrets and ships the tagged production images.
-* **Target Deployment:** Connects to the host environment hosting the application container engine, runs a rolling update, and replaces old container workloads seamlessly.
+**Repository:** https://github.com/devopsinsiders/ReactTodoUIMonolith
 
----
+**Technology Stack:**
 
-# 🚀 How to Run Locally
-
-## Prerequisites
-
-* Docker Desktop installed
-
-## Step 1: Clone this Automation Infrastructure Repository
-
-```bash
-git clone https://github.com/Pjaisw1103/CICD-Deployment-Automation-Pipeline.git
-cd CICD-Deployment-Automation-Pipeline
-```
-
-## Step 2: Clone the Application Source Repositories
-
-Clone the actual source code repositories inside the project directory:
-
-```bash
-git clone https://github.com/devopsinsiders/ReactTodoUIMonolith.git frontend
-
-git clone https://github.com/devopsinsiders/PyTodoBackendMonolith.git backend
-```
-
-## Step 3: Build Docker Images Locally
-
-Use the provided Docker architecture files to build the containers:
-
-```bash
-docker build -t local-todo-frontend ./frontend
-
-docker build -t local-todo-backend ./backend
-```
+* ReactJS
+* JavaScript
+* Nginx Deployment
 
 ---
 
-## 🖼️ Application Previews
+### Backend Application
 
-### Frontend Interface Screenshot
+**Repository:** https://github.com/devopsinsiders/PyTodoBackendMonolith
 
-*Add your frontend screenshot here*
+**Technology Stack:**
 
-```markdown
-![Frontend Screenshot](screenshots/frontend.png)
-```
-
-### Backend Service Screenshot
-
-*Add your backend screenshot here*
-
-```markdown
-![Backend Screenshot](screenshots/backend.png)
-```
+* Python
+* REST API
+* Linux Runtime Environment
 
 ---
 
-## 🔐 Required Secrets Configuration
-
-To run the CI/CD pipeline successfully, configure the following repository secrets:
-
-| Secret Key      | Description                                                      |
-| --------------- | ---------------------------------------------------------------- |
-| DOCKER_USERNAME | Docker Hub username for pushing container images.                |
-| DOCKER_PASSWORD | Docker Hub Personal Access Token (PAT) used for authentication.  |
-| BACKEND_API_URL | Backend endpoint URL consumed by the React frontend application. |
-
----
-
-## 📦 Docker Image Workflow
+# 🏗️ CI/CD Architecture
 
 ```text
-Developer Push
-       │
-       ▼
- GitHub Actions
-       │
-       ▼
- Docker Build
-       │
-       ▼
- Docker Hub Push
-       │
-       ▼
- Production Server
-       │
-       ▼
- Container Update
+Developer Commit
+        │
+        ▼
+Source Repository
+        │
+        ▼
+Azure DevOps Pipeline
+        │
+ ┌──────┴──────┐
+ │             │
+ ▼             ▼
+Build      Validation
+ │             │
+ └──────┬──────┘
+        ▼
+Artifact Creation
+        │
+        ▼
+Release Pipeline
+        │
+        ▼
+Target Environment
+        │
+        ▼
+Application Deployment
 ```
 
 ---
 
-## 💡 Disclaimer
+# 🔄 CI/CD Pipeline Workflow
 
-The application source code belongs exclusively to **@devopsinsiders**.
+## Phase 1 — Continuous Integration (CI)
 
-This repository functions as an isolated **DevOps Automation Overlay Framework**, responsible only for:
+The CI pipeline is responsible for validating every code change before it reaches the deployment stage.
 
-* Dockerization
-* CI/CD Automation
-* Container Image Management
-* Deployment Orchestration
+### Workflow
 
-No ownership is claimed over the underlying application source code.
+#### 1. Source Code Trigger
+
+The pipeline automatically starts whenever:
+
+* A commit is pushed
+* A Pull Request is merged
+* Changes are detected in the configured branch
+
+---
+
+#### 2. Build Stage
+
+Azure DevOps provisions a fresh build agent and:
+
+* Downloads source code
+* Loads environment variables
+* Prepares build runtime
+* Executes application build process
+
+---
+
+#### 3. Validation Stage
+
+The pipeline performs validation checks such as:
+
+* Dependency verification
+* Build verification
+* Configuration validation
+* Runtime checks
+
+---
+
+#### 4. Artifact Publishing
+
+After successful validation:
+
+* Build artifacts are generated
+* Artifacts are published
+* Release-ready packages are stored for deployment
+
+---
+
+# 🚀 Phase 2 — Continuous Deployment (CD)
+
+The deployment pipeline automates the release process and updates the target environment.
+
+### Workflow
+
+#### 1. Artifact Retrieval
+
+The deployment stage retrieves the latest validated build artifacts.
+
+---
+
+#### 2. Environment Configuration
+
+Azure DevOps securely injects:
+
+* Environment variables
+* Secret values
+* Runtime configurations
+
+---
+
+#### 3. Release Execution
+
+The deployment workflow:
+
+* Connects to the target environment
+* Replaces previous application versions
+* Deploys the latest release package
+
+---
+
+#### 4. Deployment Verification
+
+Post-deployment checks ensure:
+
+* Services are available
+* Endpoints are reachable
+* Deployment completed successfully
+
+---
+
+# 📊 End-to-End Delivery Flow
+
+```text
+Code Commit
+     │
+     ▼
+Azure Repos / GitHub
+     │
+     ▼
+Azure DevOps CI Pipeline
+     │
+     ▼
+Build & Validation
+     │
+     ▼
+Artifact Publishing
+     │
+     ▼
+Azure DevOps Release Pipeline
+     │
+     ▼
+Deployment Environment
+     │
+     ▼
+Production Application
+```
+
+---
+
+# 🔐 Pipeline Variables & Secrets
+
+The following secure variables are required for successful pipeline execution:
+
+| Variable        | Description                               |
+| --------------- | ----------------------------------------- |
+| BACKEND_API_URL | Backend API endpoint consumed by frontend |
+| DEPLOYMENT_HOST | Target deployment server                  |
+| DEPLOYMENT_USER | Deployment user account                   |
+| SSH_PRIVATE_KEY | Secure deployment authentication          |
+| ENVIRONMENT     | Deployment environment identifier         |
+
+---
+
+# 📸 Application Screenshots
+
+## Frontend Interface
+
+Replace the image below with your frontend screenshot.
+
+```markdown
+![Frontend UI](screenshots/frontend-ui.png)
+```
+
+---
+
+## Backend Service
+
+Replace the image below with your backend screenshot.
+
+```markdown
+![Backend Service](screenshots/backend-service.png)
+```
+
+---
+
+# 🎯 Key Features
+
+* Azure DevOps CI/CD Implementation
+* Automated Build Execution
+* Automated Deployment Workflow
+* Environment Configuration Management
+* Secure Secret Handling
+* Artifact-Based Release Process
+* Scalable Deployment Architecture
+* Separation of Application Code and Deployment Automation
+
+---
+
+# 📝 Note on Containerization
+
+This repository also contains Dockerfiles used for creating application runtime environments.
+
+However, the primary focus of this project is the implementation of the **CI/CD pipeline and deployment automation process**. Containerization is included only as a supporting deployment component and is not the central objective of this repository.
+
+---
+
+# 📄 Disclaimer
+
+The application source code belongs to its respective owners:
+
+* Frontend: https://github.com/devopsinsiders/ReactTodoUIMonolith
+* Backend: https://github.com/devopsinsiders/PyTodoBackendMonolith
+
+This repository is intended solely to demonstrate CI/CD implementation, deployment automation, and DevOps workflow orchestration using Azure DevOps.

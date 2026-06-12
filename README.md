@@ -220,7 +220,6 @@ The following secure variables are required for successful pipeline execution:
 
 ## Frontend Interface
 
-Replace the image below with your frontend screenshot.
 
 ```markdown
 ![Frontend UI](screenshots/frontend-ui.png)
@@ -230,7 +229,6 @@ Replace the image below with your frontend screenshot.
 
 ## Backend Service
 
-Replace the image below with your backend screenshot.
 
 ```markdown
 ![Backend Service](screenshots/backend-service.png)

@@ -216,11 +216,9 @@ The following secure variables are required for successful pipeline execution:
 
 ---
 
-# 📸 Application Screenshots
-
 ## Frontend Interface
 
-![Frontend UI](Screenshot 2026-06-12 125801.png)
+![Frontend UI](./Screenshot%202026-06-12%20125801.png)
 
 ---
 

@@ -1,14 +1,29 @@
 # 🚀 CI/CD Deployment Automation Pipeline for Todo Application
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=240&text=CI/CD%20Deployment%20Automation&fontSize=40&fontAlignY=40&desc=Azure%20DevOps%20%7C%20Release%20Automation%20%7C%20DevOps&descAlignY=60&fontColor=ffffff&animation=fadeIn&color=0:0078D4,50:005A9C,100:0D1117"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Azure%20DevOps-0078D7?style=for-the-badge&logo=azuredevops&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CI%2FCD-Automated-success?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Docker-Supported-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Status-Production%20Ready-22C55E?style=for-the-badge"/>
+</p>
+
+---
+
+## 📌 Project Overview
+
 This repository demonstrates the implementation of a complete **CI/CD (Continuous Integration & Continuous Deployment) Pipeline** using **Azure DevOps** for a multi-service Todo Application.
 
 The primary objective of this project is to automate the software delivery lifecycle—from source code integration to production deployment—while maintaining a clean separation between application development and deployment automation.
 
 ---
 
-# 📌 Project Overview
+## 🎯 Responsibilities of This Repository
 
-The application source code is maintained separately and this repository acts as an independent deployment automation layer responsible for:
+This repository acts as an independent deployment automation layer responsible for:
 
 * Continuous Integration (CI)
 * Continuous Deployment (CD)
@@ -21,15 +36,13 @@ The pipeline automatically detects changes, builds application artifacts, valida
 
 ---
 
-# 📦 Application Source Repositories
+## 📦 Application Source Repositories
 
-The CI/CD workflow orchestrates deployment for the following application repositories:
-
-### Frontend Application
+### 🎨 Frontend Application
 
 **Repository:** https://github.com/devopsinsiders/ReactTodoUIMonolith
 
-**Technology Stack:**
+**Technology Stack**
 
 * ReactJS
 * JavaScript
@@ -37,11 +50,11 @@ The CI/CD workflow orchestrates deployment for the following application reposit
 
 ---
 
-### Backend Application
+### ⚙️ Backend Application
 
 **Repository:** https://github.com/devopsinsiders/PyTodoBackendMonolith
 
-**Technology Stack:**
+**Technology Stack**
 
 * Python
 * REST API
@@ -49,7 +62,7 @@ The CI/CD workflow orchestrates deployment for the following application reposit
 
 ---
 
-# 🏗️ CI/CD Architecture
+## 🏗️ CI/CD Architecture
 
 ```text
 Developer Commit
@@ -89,7 +102,7 @@ The CI pipeline is responsible for validating every code change before it reache
 
 ### Workflow
 
-#### 1. Source Code Trigger
+#### 1️⃣ Source Code Trigger
 
 The pipeline automatically starts whenever:
 
@@ -99,7 +112,7 @@ The pipeline automatically starts whenever:
 
 ---
 
-#### 2. Build Stage
+#### 2️⃣ Build Stage
 
 Azure DevOps provisions a fresh build agent and:
 
@@ -110,7 +123,7 @@ Azure DevOps provisions a fresh build agent and:
 
 ---
 
-#### 3. Validation Stage
+#### 3️⃣ Validation Stage
 
 The pipeline performs validation checks such as:
 
@@ -121,7 +134,7 @@ The pipeline performs validation checks such as:
 
 ---
 
-#### 4. Artifact Publishing
+#### 4️⃣ Artifact Publishing
 
 After successful validation:
 
@@ -137,13 +150,13 @@ The deployment pipeline automates the release process and updates the target env
 
 ### Workflow
 
-#### 1. Artifact Retrieval
+#### 1️⃣ Artifact Retrieval
 
 The deployment stage retrieves the latest validated build artifacts.
 
 ---
 
-#### 2. Environment Configuration
+#### 2️⃣ Environment Configuration
 
 Azure DevOps securely injects:
 
@@ -153,7 +166,7 @@ Azure DevOps securely injects:
 
 ---
 
-#### 3. Release Execution
+#### 3️⃣ Release Execution
 
 The deployment workflow:
 
@@ -163,7 +176,7 @@ The deployment workflow:
 
 ---
 
-#### 4. Deployment Verification
+#### 4️⃣ Deployment Verification
 
 Post-deployment checks ensure:
 
@@ -173,38 +186,30 @@ Post-deployment checks ensure:
 
 ---
 
-# 📊 End-to-End Delivery Flow
+## 📊 End-to-End Delivery Flow
 
-```text
-Code Commit
-     │
-     ▼
-Azure Repos / GitHub
-     │
-     ▼
-Azure DevOps CI Pipeline
-     │
-     ▼
-Build & Validation
-     │
-     ▼
-Artifact Publishing
-     │
-     ▼
-Azure DevOps Release Pipeline
-     │
-     ▼
-Deployment Environment
-     │
-     ▼
-Production Application
+```mermaid
+flowchart LR
+
+A[Code Commit]
+--> B[GitHub / Azure Repos]
+
+B --> C[Azure DevOps CI]
+
+C --> D[Build & Validation]
+
+D --> E[Artifact Publishing]
+
+E --> F[Release Pipeline]
+
+F --> G[Deployment Environment]
+
+G --> H[Production Application]
 ```
 
 ---
 
-# 🔐 Pipeline Variables & Secrets
-
-The following secure variables are required for successful pipeline execution:
+## 🔐 Pipeline Variables & Secrets
 
 | Variable        | Description                               |
 | --------------- | ----------------------------------------- |
@@ -216,13 +221,15 @@ The following secure variables are required for successful pipeline execution:
 
 ---
 
-## Frontend Interface
+## 🖥️ Frontend Interface
 
-![Frontend UI](./Screenshot%202026-06-12%20125801.png)
+<p align="center">
+  <img src="./Screenshot%202026-06-12%20125801.png" alt="Todo Application UI"/>
+</p>
 
 ---
 
-# 🎯 Key Features
+## ✨ Key Features
 
 * Azure DevOps CI/CD Implementation
 * Automated Build Execution
@@ -235,7 +242,7 @@ The following secure variables are required for successful pipeline execution:
 
 ---
 
-# 📝 Note on Containerization
+## 🐳 Note on Containerization
 
 This repository also contains Dockerfiles used for creating application runtime environments.
 
@@ -243,11 +250,40 @@ However, the primary focus of this project is the implementation of the **CI/CD 
 
 ---
 
-# 📄 Disclaimer
+## 📄 Disclaimer
 
 The application source code belongs to its respective owners:
 
-* Frontend: https://github.com/devopsinsiders/ReactTodoUIMonolith
-* Backend: https://github.com/devopsinsiders/PyTodoBackendMonolith
+### Frontend
+
+https://github.com/devopsinsiders/ReactTodoUIMonolith
+
+### Backend
+
+https://github.com/devopsinsiders/PyTodoBackendMonolith
 
 This repository is intended solely to demonstrate CI/CD implementation, deployment automation, and DevOps workflow orchestration using Azure DevOps.
+
+---
+
+## 👩‍💻 Author
+
+**Priya Jaiswal**
+
+Azure Cloud | DevOps | Terraform | Azure DevOps
+
+<p align="center">
+  <a href="https://github.com/Pjaisw1103">
+    <img src="https://img.shields.io/badge/GitHub-Pjaisw1103-181717?style=for-the-badge&logo=github"/>
+  </a>
+
+  <a href="https://linkedin.com/in/priya-jaiswal1103">
+    <img src="https://img.shields.io/badge/LinkedIn-Priya%20Jaiswal-0078D4?style=for-the-badge&logo=linkedin"/>
+  </a>
+</p>
+
+---
+
+<p align="center">
+⭐ If you found this project useful, consider giving it a star.
+</p>

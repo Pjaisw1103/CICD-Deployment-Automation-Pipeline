@@ -222,7 +222,7 @@ The following secure variables are required for successful pipeline execution:
 
 
 ```markdown
-![Frontend UI](screenshots/frontend-ui.png)
+![Frontend UI](Screenshot 2026-06-12 125801.png)
 ```
 
 

@@ -220,11 +220,7 @@ The following secure variables are required for successful pipeline execution:
 
 ## Frontend Interface
 
-
-```markdown
 ![Frontend UI](./screenshots/Screenshot%202026-06-12%20125801.png)
-```
-
 
 ---
 

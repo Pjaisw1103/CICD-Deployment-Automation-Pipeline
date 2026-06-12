@@ -227,12 +227,6 @@ The following secure variables are required for successful pipeline execution:
 
 ---
 
-## Backend Service
-
-
-```markdown
-![Backend Service](screenshots/backend-service.png)
-```
 
 ---
 

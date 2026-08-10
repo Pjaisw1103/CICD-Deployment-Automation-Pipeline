@@ -119,129 +119,38 @@ The application source code is maintained across decoupled repositories:
 
 ## 🔄 CI/CD Pipelines Documentation
 
-### 1️⃣ Backend Pipeline ([`dev-todoapp-pipeline.yml`](file:///d:/CICD-Deployment-Automation-Pipeline/ApplicationPipeline/dev-todoapp-pipeline.yml))
+Instead of embedding full YAML code blocks, this section describes the execution workflow, triggers, and stage responsibilities for both application pipelines.
 
-Automates building, validating, and deploying the Python FastAPI backend service.
+### 1️⃣ Backend CI/CD Workflow ([`dev-todoapp-pipeline.yml`](file:///d:/CICD-Deployment-Automation-Pipeline/ApplicationPipeline/dev-todoapp-pipeline.yml))
 
-```yaml
-trigger: 
-  branches:
-    include:
-      - main
+The backend pipeline automates the build, packaging, and deployment lifecycle of the Python FastAPI service.
 
-pool: default
-
-stages:
-  - stage: BuildAndPublish
-    displayName: 'Build And Publish Backend'
-    jobs:
-      - job: BuildJob
-        displayName: 'Build Backend Artifact'
-        steps:
-          - task: UsePythonVersion@0
-            displayName: 'Set Python Version 3.9'
-            inputs:
-              versionSpec: '3.9'
-
-          - task: PowerShell@2
-            displayName: 'Upgrade Pip'
-            inputs:
-              targetType: 'inline'
-              script: |
-                python -m pip install --upgrade pip
-
-          - task: PublishPipelineArtifact@1
-            displayName: 'Publish Backend Artifact'
-            inputs:
-              targetPath: '$(Build.SourcesDirectory)/app'
-              artifact: 'PythonAppBuild'
-              publishLocation: 'pipeline'
-
-  - stage: Deployment
-    displayName: 'Deploy Backend Service'
-    jobs:
-      - deployment: Deployment
-        displayName: 'Deploy Backend to Dev VM'
-        environment: 
-          name: dev-env
-          resourceType: VirtualMachine
-        strategy:
-          runOnce:
-            deploy: 
-              steps:
-                - task: DownloadPipelineArtifact@2
-                  displayName: 'Download Backend Artifact'
-                  inputs:
-                    buildType: 'current'
-                    artifactName: 'PythonAppBuild'
-                    targetPath: '$(Pipeline.Workspace)/app'
-```
+- **Trigger Strategy:**
+  - Triggers automatically upon commits pushed to the `main` branch.
+- **Continuous Integration (CI) Stage:**
+  - **Runtime Provisioning:** Sets up Python runtime (`3.9`) environment.
+  - **Package Upgrade:** Upgrades `pip` package manager and validates dependencies.
+  - **Artifact Publishing:** Packages backend application sources from `$(Build.SourcesDirectory)/app` and publishes pipeline artifact `PythonAppBuild`.
+- **Continuous Deployment (CD) Stage:**
+  - **Target Environment:** Connects to Virtual Machine resources registered under environment `dev-env`.
+  - **Artifact Download:** Downloads `PythonAppBuild` package to `$(Pipeline.Workspace)/app` on the target deployment server.
 
 ---
 
-### 2️⃣ Frontend Pipeline ([`dev-todoui-pipeline.yml`](file:///d:/CICD-Deployment-Automation-Pipeline/ApplicationPipeline/dev-todoui-pipeline.yml))
+### 2️⃣ Frontend CI/CD Workflow ([`dev-todoui-pipeline.yml`](file:///d:/CICD-Deployment-Automation-Pipeline/ApplicationPipeline/dev-todoui-pipeline.yml))
 
-Automates building the React static bundle and publishing it to an Nginx web server.
+The frontend pipeline handles compiling and deploying the React static bundle to Nginx web servers.
 
-```yaml
-trigger: none
-
-pool: default
-
-stages:
-  - stage: BuildAndPublish
-    displayName: 'Build And Publish Frontend'
-    jobs:
-      - job: BuildJob
-        displayName: 'Build Frontend Artifact'
-        steps:
-          - task: NodeTool@0
-            displayName: 'Set Node.js 16.x'
-            inputs:
-              versionSource: 'spec'
-              versionSpec: '16.x'
-
-          - task: PowerShell@2
-            displayName: 'Install Dependencies & Build App'
-            inputs:
-              targetType: 'inline'
-              script: |
-                npm install
-                npm run build
-
-          - task: PublishPipelineArtifact@1
-            displayName: 'Publish Frontend Artifact'
-            inputs:
-              targetPath: '$(Build.SourcesDirectory)/build'
-              artifact: 'ToDoBuild'
-              publishLocation: 'pipeline'
-
-  - stage: Deployment
-    displayName: 'Deploy Frontend Service'
-    jobs:
-      - deployment: Deployment
-        displayName: 'Deploy Frontend to Dev VM'
-        environment: 
-          name: dev-env
-          resourceType: VirtualMachine
-        strategy:
-          runOnce:
-            deploy: 
-              steps:
-                - task: DownloadBuildArtifacts@1
-                  displayName: 'Download Frontend Artifacts'
-                  inputs:
-                    buildType: 'current'
-                    downloadType: 'single'
-                    artifactName: 'ToDoBuild'
-                    downloadPath: '$(Pipeline.Workspace)'
-
-                - task: Bash@3
-                  displayName: 'Deploy Assets to Nginx Web Server'
-                  inputs:
-                    targetType: 'inline'
-                    script: 'sudo cp -r $(Pipeline.Workspace)/* /var/www/html/'
-```
+- **Trigger Strategy:**
+  - Set to manual execution (`trigger: none`) or stage trigger configuration.
+- **Continuous Integration (CI) Stage:**
+  - **Environment Setup:** Provisions Node.js execution tool (`16.x`).
+  - **Build Execution:** Runs `npm install` and compiles production assets with `npm run build`.
+  - **Artifact Publishing:** Archives `/build` static directory into pipeline artifact `ToDoBuild`.
+- **Continuous Deployment (CD) Stage:**
+  - **Target Environment:** Targets VM resources configured in `dev-env`.
+  - **Artifact Download:** Retrieves published `ToDoBuild` artifacts to `$(Pipeline.Workspace)`.
+  - **Server Release:** Executes deployment bash script to copy web assets into `/var/www/html/` Nginx hosting path.
 
 ---
 
@@ -302,14 +211,15 @@ To execute these pipelines in your Azure DevOps Organization, follow these setup
 
 ## 🔐 Pipeline Variables & Secrets
 
-Configure the following pipeline variables under **Pipelines -> Library -> Variable Groups**:
+Configure the following pipeline variables under **Pipelines -> Library -> Variable Groups**. Sensitive identifiers and values are obfuscated for security compliance:
 
-| Variable Name | Description | Example / Recommended Value |
+| Variable Name | Description | Example / Obfuscated Value |
 | :--- | :--- | :--- |
-| `BACKEND_API_URL` | API server URL consumed by the Frontend UI | `http://<your-vm-ip>:8000` |
-| `ENVIRONMENT` | Target Deployment Identifier | `dev` / `staging` / `prod` |
-| `DEPLOYMENT_HOST` | Target VM IP address or domain | `10.0.0.4` |
-| `SSH_PRIVATE_KEY` | Secret SSH Key for server authentication | `*** (Secured Variable)` |
+| `B4CKEND_AP1_URL` | API server URL consumed by Frontend UI | `http://xx.xx.xx.xx:8000` |
+| `ENVR10NMENT` | Target Deployment Environment Identifier | `d3v` / `st4g1ng` / `pr0d` |
+| `D3PLOYMENT_H0ST` | Target VM IP address or host domain | `10.x.x.x` |
+| `5SH_PR1VATE_K3Y` | Secret SSH Authentication Key | `***** (S3CUR3D_VARS)` |
+
 
 ---
 

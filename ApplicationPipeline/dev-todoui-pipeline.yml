@@ -5,63 +5,54 @@ pool: default
 stages:
 
   - stage: BuildAndPublish
-    displayName: Build And Publish
+    displayName: 'Build And Publish Frontend'
     jobs:
       - job: BuildJob
-        displayName: Build Artifact
+        displayName: 'Build Frontend Artifact'
         steps:
         - task: NodeTool@0
+          displayName: 'Set Node.js 16.x'
           inputs:
             versionSource: 'spec'
             versionSpec: '16.x'
 
         - task: PowerShell@2
+          displayName: 'Install Dependencies & Build App'
           inputs:
             targetType: 'inline'
             script: |
               npm install
               npm run build
 
-     
         - task: PublishPipelineArtifact@1
+          displayName: 'Publish Frontend Artifact'
           inputs:
             targetPath: '$(Build.SourcesDirectory)/build'
             artifact: 'ToDoBuild'
             publishLocation: 'pipeline'
-     
+
   - stage: Deployment
-    displayName: Deployment
+    displayName: 'Deploy Frontend Service'
     jobs:
       - deployment: Deployment
-        displayName: Deployment
+        displayName: 'Deploy Frontend to Dev VM'
         environment: 
-         name: dev-env
-         resourceType: VirtualMachine
+          name: dev-env
+          resourceType: VirtualMachine
         strategy:
-         runOnce:
-           deploy: 
-             steps:
-             - task: DownloadBuildArtifacts@1
-               inputs:
-                 buildType: 'current'
-                 downloadType: 'single'
-                 artifactName: 'ToDoBuild'
-                 downloadPath: '$(Pipeline.Workspace)'
-             
-             - task: Bash@3
-               inputs:
-                 targetType: 'inline'
-                 script: 'sudo cp -r $(Pipeline.Workspace)/* /var/www/html/'
-             
-             
-          
-
-
-
-
-
-
-
-
-
-        
+          runOnce:
+            deploy: 
+              steps:
+              - task: DownloadBuildArtifacts@1
+                displayName: 'Download Frontend Artifacts'
+                inputs:
+                  buildType: 'current'
+                  downloadType: 'single'
+                  artifactName: 'ToDoBuild'
+                  downloadPath: '$(Pipeline.Workspace)'
+              
+              - task: Bash@3
+                displayName: 'Deploy Assets to Nginx Web Server'
+                inputs:
+                  targetType: 'inline'
+                  script: 'sudo cp -r $(Pipeline.Workspace)/* /var/www/html/'

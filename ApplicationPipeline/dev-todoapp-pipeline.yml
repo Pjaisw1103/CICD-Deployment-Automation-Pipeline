@@ -1,0 +1,46 @@
+trigger: 
+  branches:
+    include:
+      - main
+pool: default
+stages:
+  - stage: BuildAndPublish
+    displayName: 'Build And Publish Backend'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build Backend Artifact'
+        steps:
+        - task: UsePythonVersion@0
+          displayName: 'Set Python Version 3.9'
+          inputs:
+            versionSpec: '3.9'
+        - task: PowerShell@2
+          displayName: 'Upgrade Pip'
+          inputs:
+            targetType: 'inline'
+            script: |
+              python -m pip install --upgrade pip
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish Backend Artifact'
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/app'
+            artifact: 'PythonAppBuild'
+            publishLocation: 'pipeline'
+  - stage: Deployment
+    displayName: 'Deploy Backend Service'
+    jobs:
+      - deployment: Deployment
+        displayName: 'Deploy Backend to Dev VM'
+        environment: 
+          name: dev-env
+          resourceType: VirtualMachine
+        strategy:
+          runOnce:
+            deploy: 
+              steps:
+              - task: DownloadPipelineArtifact@2
+                displayName: 'Download Backend Artifact'
+                inputs:
+                  buildType: 'current'
+                  artifactName: 'PythonAppBuild'
+                  targetPath: '$(Pipeline.Workspace)/app'

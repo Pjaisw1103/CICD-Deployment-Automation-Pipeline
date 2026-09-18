@@ -19,13 +19,13 @@
 - [Overview](#-overview)
 - [Architecture & Workflow](#-architecture--workflow)
 - [Repository Structure](#-repository-structure)
-- [Application Source Repositories](#-application-source-repositories)
+- [Application Source Components](#-application-source-components)
 - [CI/CD Pipelines Documentation](#-cicd-pipelines-documentation)
   - [Backend Pipeline (`dev-todoapp-pipeline.yml`)](#1-backend-pipeline-dev-todoapp-pipelineyml)
   - [Frontend Pipeline (`dev-todoui-pipeline.yml`)](#2-frontend-pipeline-dev-todoui-pipelineyml)
 - [Docker Containerization](#-docker-containerization)
   - [Backend Dockerfile](#backend-dockerfile)
-  - [Frontend Dockerfile](#frontend-frontend-dockerfile)
+  - [Frontend Dockerfile](#frontend-dockerfile)
   - [Local Docker Execution Guide](#local-docker-execution-guide)
 - [Azure DevOps Setup Guide](#-azure-devops-setup-guide)
 - [Pipeline Variables & Secrets](#-pipeline-variables--secrets)
@@ -37,10 +37,10 @@
 
 ## 📌 Overview
 
-This repository houses the complete **CI/CD (Continuous Integration & Continuous Deployment) Automation Pipeline** for a full-stack multi-service **Todo Application**. Built using **Azure DevOps**, **Docker**, **Python FastAPI**, and **ReactJS**, this project demonstrates industry standard practices for decoupled pipeline automation, artifact lifecycle management, containerization, and virtual machine deployment.
+This repository houses the complete **CI/CD (Continuous Integration & Continuous Deployment) Automation Pipeline** and full-stack source code for a multi-service **Todo Application**. Built using **Azure DevOps**, **Docker**, **Python FastAPI**, and **ReactJS**, this project demonstrates industry-standard practices for monorepo pipeline automation, artifact lifecycle management, containerization, and virtual machine deployment.
 
 ### 🌟 Key Technical Highlights
-- **Decoupled Deployment Architecture:** Separates infrastructure and deployment automation code from application source code.
+- **Full-Stack Monorepo Architecture:** Integrates Python FastAPI backend and ReactJS frontend applications alongside CI/CD automation pipelines and Docker configurations.
 - **Automated CI/CD Workflows:** Automated triggers for commit integration, artifact building, stage dependencies, and zero-downtime release strategies.
 - **Production-Grade Dockerization:** Includes multi-stage optimized builds, modern GPG keyring management, Microsoft SQL ODBC drivers, and container healthchecks.
 - **Multi-Environment Deployment Target:** Pre-configured for deployment to Azure DevOps Virtual Machine Environment resources (`dev-env`).
@@ -100,28 +100,39 @@ CICD-Deployment-Automation-Pipeline/
 │   │   └── Dockerfile             # Multi-layer Dockerfile (Python 3.10 + MS ODBC 17 + Healthcheck)
 │   └── ToDoFrontend/
 │       └── Dockerfile             # Multi-stage Dockerfile (Node 18 Builder -> Nginx Alpine Runtime)
+├── PyTodoBackendMonolith/         # 🐍 Python FastAPI Backend Monolith Application Source Code
+│   ├── app.py                     # REST API Server Logic
+│   ├── requirements.txt           # Python Dependencies
+│   ├── Dockerfile                 # Backend Standalone Dockerfile
+│   └── azure-pipelines.yml        # Auto-Discovery Azure DevOps Pipeline
+├── ReactTodoUIMonolith/           # ⚛️ ReactJS Frontend UI Monolith Application Source Code
+│   ├── src/                       # React Components & UI Logic
+│   ├── public/                    # Static Web Assets & Logos
+│   ├── package.json               # Node.js Dependencies & Build Scripts
+│   ├── Dockerfile                 # Frontend Standalone Dockerfile
+│   └── azure-pipelines.yml        # Auto-Discovery Azure DevOps Pipeline
 ├── Screenshot 2026-06-12 125801.png # Application UI Preview Screenshot
 └── README.md                      # Pipeline & Project Documentation
 ```
 
 ---
 
-## 📦 Application Source Repositories
+## 📦 Application Source Components
 
-The application source code is maintained across decoupled repositories:
+The full application source code is maintained directly within this repository:
 
-| Component | Repository Link | Tech Stack | Runtime / Server |
+| Component | Path / Directory | Tech Stack | Runtime / Server |
 | :--- | :--- | :--- | :--- |
-| **Frontend UI** | [ReactTodoUIMonolith](https://github.com/devopsinsiders/ReactTodoUIMonolith) | ReactJS, JavaScript, HTML5, CSS3 | Nginx Web Server |
-| **Backend API** | [PyTodoBackendMonolith](https://github.com/devopsinsiders/PyTodoBackendMonolith) | Python 3.10, FastAPI, REST API | Uvicorn / Systemd Daemon |
+| **Frontend UI** | [`ReactTodoUIMonolith/`](./ReactTodoUIMonolith) | ReactJS 18, JavaScript, HTML5, CSS3 | Nginx Web Server |
+| **Backend API** | [`PyTodoBackendMonolith/`](./PyTodoBackendMonolith) | Python 3.10, FastAPI, REST API | Uvicorn / Systemd Daemon |
 
 ---
 
 ## 🔄 CI/CD Pipelines Documentation
 
-Instead of embedding full YAML code blocks, this section describes the execution workflow, triggers, and stage responsibilities for both application pipelines.
+This section describes the execution workflow, triggers, and stage responsibilities for both application pipelines.
 
-### 1️⃣ Backend CI/CD Workflow ([`dev-todoapp-pipeline.yml`](file:///d:/CICD-Deployment-Automation-Pipeline/ApplicationPipeline/dev-todoapp-pipeline.yml))
+### 1️⃣ Backend CI/CD Workflow ([`dev-todoapp-pipeline.yml`](./ApplicationPipeline/dev-todoapp-pipeline.yml))
 
 The backend pipeline automates the build, packaging, and deployment lifecycle of the Python FastAPI service.
 
@@ -137,7 +148,7 @@ The backend pipeline automates the build, packaging, and deployment lifecycle of
 
 ---
 
-### 2️⃣ Frontend CI/CD Workflow ([`dev-todoui-pipeline.yml`](file:///d:/CICD-Deployment-Automation-Pipeline/ApplicationPipeline/dev-todoui-pipeline.yml))
+### 2️⃣ Frontend CI/CD Workflow ([`dev-todoui-pipeline.yml`](./ApplicationPipeline/dev-todoui-pipeline.yml))
 
 The frontend pipeline handles compiling and deploying the React static bundle to Nginx web servers.
 
@@ -156,13 +167,13 @@ The frontend pipeline handles compiling and deploying the React static bundle to
 
 ## 🐳 Docker Containerization
 
-Containerization manifests are located inside the `Docker/` directory for containerized deployment strategies.
+Containerization manifests are available in both centralized (`Docker/`) and application component directories.
 
-### Backend Dockerfile ([`Docker/ToDoBackend/Dockerfile`](file:///d:/CICD-Deployment-Automation-Pipeline/Docker/ToDoBackend/Dockerfile))
+### Backend Dockerfile ([`Docker/ToDoBackend/Dockerfile`](./Docker/ToDoBackend/Dockerfile))
 - **Base Image:** `python:3.10-slim`
 - **Key Enhancements:** Microsoft ODBC Driver 17 installation via modern GPG keyrings, clean APT package management, `HEALTHCHECK`, and `EXPOSE 8000`.
 
-### Frontend Dockerfile ([`Docker/ToDoFrontend/Dockerfile`](file:///d:/CICD-Deployment-Automation-Pipeline/Docker/ToDoFrontend/Dockerfile))
+### Frontend Dockerfile ([`Docker/ToDoFrontend/Dockerfile`](./Docker/ToDoFrontend/Dockerfile))
 - **Multi-stage Architecture:** `node:18-alpine` as builder stage and `nginx:alpine` as lightweight server runtime.
 - **Port:** `80`.
 
@@ -170,8 +181,8 @@ Containerization manifests are located inside the `Docker/` directory for contai
 
 #### 1. Run Backend Container
 ```bash
-# Build Backend Image
-docker build -t todo-backend:latest ./Docker/ToDoBackend
+# Build Backend Image using root repository context
+docker build -t todo-backend:latest -f Docker/ToDoBackend/Dockerfile ./PyTodoBackendMonolith
 
 # Run Backend Container
 docker run -d -p 8000:8000 --name todo-backend-app todo-backend:latest
@@ -179,8 +190,8 @@ docker run -d -p 8000:8000 --name todo-backend-app todo-backend:latest
 
 #### 2. Run Frontend Container
 ```bash
-# Build Frontend Image
-docker build -t todo-frontend:latest ./Docker/ToDoFrontend
+# Build Frontend Image using root repository context
+docker build -t todo-frontend:latest -f Docker/ToDoFrontend/Dockerfile ./ReactTodoUIMonolith
 
 # Run Frontend Container
 docker run -d -p 80:80 --name todo-frontend-app todo-frontend:latest
@@ -204,8 +215,8 @@ To execute these pipelines in your Azure DevOps Organization, follow these setup
    - Go to **Pipelines -> New Pipeline**.
    - Select your Git Repository (`CICD-Deployment-Automation-Pipeline`).
    - Select **Existing Azure Pipelines YAML file**.
-   - Choose `/ApplicationPipeline/dev-todoapp-pipeline.yml` for Backend CI/CD.
-   - Repeat for `/ApplicationPipeline/dev-todoui-pipeline.yml` for Frontend CI/CD.
+   - Choose `/ApplicationPipeline/dev-todoapp-pipeline.yml` (or `/PyTodoBackendMonolith/azure-pipelines.yml`) for Backend CI/CD.
+   - Repeat for `/ApplicationPipeline/dev-todoui-pipeline.yml` (or `/ReactTodoUIMonolith/azure-pipelines.yml`) for Frontend CI/CD.
 
 ---
 
@@ -219,7 +230,6 @@ Configure the following pipeline variables under **Pipelines -> Library -> Varia
 | `ENVR10NMENT` | Target Deployment Environment Identifier | `d3v` / `st4g1ng` / `pr0d` |
 | `D3PLOYMENT_H0ST` | Target VM IP address or host domain | `10.x.x.x` |
 | `5SH_PR1VATE_K3Y` | Secret SSH Authentication Key | `***** (S3CUR3D_VARS)` |
-
 
 ---
 
